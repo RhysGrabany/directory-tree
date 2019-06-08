@@ -2,58 +2,64 @@
 
 import os
 import sys
+from collections import defaultdict
 
 def storing_folders(root):
-    os.chdir(root)
-    folders = os.listdir()
-    #folders[:] = [x for x in folders if "." in x]
 
-    print(folders)
+    directory = defaultdict(dict)
 
-    directory = {}
-    
-    for folder in folders:
+    for root, folders, files in os.walk(root):
+
         try:
-            if os.path.isdir(folder):
-                print(folder)
-                directory.update(checking_folders(folder))
-            else:
-                continue
+            directory[root] = {}
+
+            for folder in folders:
+                if folder in directory:
+                    continue
+                else:
+                    directory[root][folder] = {}
+                
+                for f in files:
+                    if f in directory[root][folder]:
+                        continue
+                    else:
+                        directory[root][folder] = f
+            
         except PermissionError:
             continue
-        except FileNotFoundError:
-            os.chdir("..")
+
+        return directory
+
+
+
+# def walklevel(some_dir, level):
+#     dirDict = {}
+
+#     some_dir = some_dir.rstrip(os.path.sep)
+#     assert os.path.isdir(some_dir)
+#     num_sep = some_dir.count(os.path.sep)
+#     for root, dirs, files in os.walk(some_dir):
+#         yield root, dirs, files
+
+#     num_sep_this = root.count(os.path.sep)
+#     if num_sep + level <= num_sep_this:
+#         del dirs[:]
     
-
-    print(directory)
-
-def checking_folders(root):
-    prev = os.getcwd()
-    os.chdir(prev + "/" + root)
-    print(root)
-
-    dirList = os.listdir()
-
-    for item in dirList:
-        if os.path.isdir(item):
-            storing_folders(root)
-        else:
-            continue
-    
-    directory = {}
-    print(dirList)
-    directory[root] = dirList
-
-    return directory
-    #print(root)
-
-
 
 if not len(sys.argv) > 1:
-    root = os.getcwd()
+    rootf = os.getcwd()
 else:
-    root = sys.argv[1]
+    rootf = sys.argv[1]
 
-storing_folders(root)
+directory = storing_folders(rootf)
+
+print(directory)
+
+#for k, v in directory.items():
+#    print(str(k) + "\n" + str(v))
+
+
+
+#storing_folders(root)
 
 
