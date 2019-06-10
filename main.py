@@ -3,32 +3,34 @@
 import os
 import sys
 from collections import defaultdict
+import numpy as np
 
-def storing_folders(root):
+def storing_folders(rootf):
 
-    directory = defaultdict(dict)
+    indent = " "
 
-    for root, folders, files in os.walk(root):
+    level = 1
+    for ro, fol, fi in sorted(os.walk(rootf)):
+        if level == 1:
+            print(indent + "." + ro + "} .")
+        else:
+            print(indent*level + " " + str(level) + os.path.basename(ro))
+        
+        level += 1
 
-        try:
-            directory[root] = {}
-
-            for folder in folders:
-                if folder in directory:
-                    continue
-                else:
-                    directory[root][folder] = {}
+        for f in sorted(fi):
+            print(indent*level + " " + str(level) + f)
+    
                 
-                for f in files:
-                    if f in directory[root][folder]:
-                        continue
-                    else:
-                        directory[root][folder] = f
-            
-        except PermissionError:
-            continue
+                
+     
 
-        return directory
+
+
+
+
+    
+    return directory
 
 
 
@@ -53,10 +55,20 @@ else:
 
 directory = storing_folders(rootf)
 
-print(directory)
+'''for root, folders, files in os.walk(rootf):
+    print("Root: " + root)
+    for folder in folders:
+        print("Folder: " + folder)
+        for f in files:
+            print("File: " + f + "\n")'''
 
-#for k, v in directory.items():
-#    print(str(k) + "\n" + str(v))
+#print(directory)
+
+for k1, v1 in directory.items():
+    print(k1)
+    for k2, v2 in directory[k1].items():
+        print(v1, k2, v2)
+        
 
 
 
