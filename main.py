@@ -6,8 +6,6 @@ from colored import fg, bg
 
 def fileOrFolder(dataFile):
 
-    print(dataFile + str(os.path.isdir(dataFile)))
-
     if (os.path.isdir(dataFile)):
         return fg('magenta')
     else:
@@ -16,6 +14,7 @@ def fileOrFolder(dataFile):
 
 def relative_depth(dir_path, level_offset):
     return dir_path.count(os.path.sep) - level_offset
+
 
 def walklevel(some_dir, level=1):
     some_dir = some_dir.rstrip(os.path.sep)
@@ -33,9 +32,8 @@ def storing_folders(rootf, depthlevel, output):
 
     levelOff = rootf.count(os.path.sep) - 1
 
-    if output is True:
+    if output:
         outputFile = open("output.txt", "w")
-
 
     for ro, fol, fi in sorted(walklevel(rootf, level=depthlevel)):
 
@@ -46,32 +44,41 @@ def storing_folders(rootf, depthlevel, output):
             color = fileOrFolder(ro)
             print(indent + (ro + color))
 
-            if output is True:
+            if output:
                 outputFile.write(indent + ro + "\n")
             
         else:
             color = fileOrFolder(ro)
-            print(indent*level + "| " + (os.path.basename(ro)))
+            print((indent*level) + "| " + os.path.basename(ro))
 
-            if output is True:
-                outputFile.write(indent*level + "| " + (os.path.basename(ro) + "\n"))
+            if output:
+                outputFile.write((indent*level) + "| " + (os.path.basename(ro) + "\n"))
         
         level += 1
 
         for f in sorted(fi):
             color = fileOrFolder(f)
-            print(indent*level + "| " + os.path.basename(f) + color)
+            print((indent*level) + "| " + os.path.basename(f) + color)
 
-            if output is True:
-                outputFile.write(indent*level + "| " + os.path.basename(f) + "\n")
-        
-        
-    
+            if output:
+                outputFile.write((indent*level) + "| " + os.path.basename(f) + "\n")
+
+out = False
 
 if not len(sys.argv) > 1:
     rootf = os.getcwd()
+elif len(sys.argv) is 3:
+    
+    rootf = sys.argv[1]
+    out = sys.argv[2]
+
+    if "-o" in out:
+        out = True
+    else:
+        out = False
+
 else:
     rootf = sys.argv[1]
 
-storing_folders(rootf, 5, True)
+storing_folders(rootf, 5, out)
 
