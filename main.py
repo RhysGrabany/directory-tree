@@ -2,50 +2,53 @@
 
 import os
 import sys
-from collections import defaultdict
-import numpy as np
+from colored import fg, bg
 
-def storing_folders(rootf):
+def fileOrFolder(dataFile):
+    return fg('blue') if os.path.isdir(dataFile) else fg('green')
+
+def relative_depth(dir_path, level_offset):
+    return dir_path.count(os.path.sep) - level_offset
+
+def walklevel(some_dir, level=1):
+    some_dir = some_dir.rstrip(os.path.sep)
+    assert os.path.isdir(some_dir)
+    num_sep = some_dir.count(os.path.sep)
+    for root, dirs, files in os.walk(some_dir):
+        yield root, dirs, files
+        num_sep_this = root.count(os.path.sep)
+        if num_sep + level <= num_sep_this:
+            del dirs[:]
+
+def storing_folders(rootf, depthlevel):
 
     indent = " "
 
-    level = 1
-    for ro, fol, fi in sorted(os.walk(rootf)):
+    levelOff = rootf.count(os.path.sep) - 1
+
+    for ro, fol, fi in sorted(walklevel(rootf, depthlevel)):
+
+        if "." in ro:
+            continue
+
+        level = relative_depth(ro, levelOff)
+
         if level == 1:
-            print(indent + "." + ro + "} .")
+            color = fileOrFolder(ro)
+            print(indent + (ro + color))
         else:
-            print(indent*level + " " + str(level) + os.path.basename(ro))
+            color = fileOrFolder(ro)
+            print(indent*level + "| " + (os.path.basename(ro) + color))
         
         level += 1
 
         for f in sorted(fi):
-            print(indent*level + " " + str(level) + f)
-    
-                
-                
-     
-
-
-
-
-
-    
-    return directory
-
-
-
-# def walklevel(some_dir, level):
-#     dirDict = {}
-
-#     some_dir = some_dir.rstrip(os.path.sep)
-#     assert os.path.isdir(some_dir)
-#     num_sep = some_dir.count(os.path.sep)
-#     for root, dirs, files in os.walk(some_dir):
-#         yield root, dirs, files
-
-#     num_sep_this = root.count(os.path.sep)
-#     if num_sep + level <= num_sep_this:
-#         del dirs[:]
+            if (".") in f:
+                continue
+            color = fileOrFolder(f)
+            print(indent*level + "| " + os.path.basename(f) + color)
+        
+        
     
 
 if not len(sys.argv) > 1:
@@ -53,25 +56,5 @@ if not len(sys.argv) > 1:
 else:
     rootf = sys.argv[1]
 
-directory = storing_folders(rootf)
-
-'''for root, folders, files in os.walk(rootf):
-    print("Root: " + root)
-    for folder in folders:
-        print("Folder: " + folder)
-        for f in files:
-            print("File: " + f + "\n")'''
-
-#print(directory)
-
-for k1, v1 in directory.items():
-    print(k1)
-    for k2, v2 in directory[k1].items():
-        print(v1, k2, v2)
-        
-
-
-
-#storing_folders(root)
-
+storing_folders(rootf, 5)
 
