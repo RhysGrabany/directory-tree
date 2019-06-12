@@ -3,6 +3,12 @@
 import os
 import sys
 from colored import fg, bg
+import argparse
+
+ap = argparse.ArgumentParser()
+ap.add_argument('-s', '--source', default='/home', required=False, help='The source directory from where the program will start at')
+ap.add_argument('-l', '--level', default=1, help='How many levels of directories the program will go down')
+ap.add_argument('-o', '--output', action='store_true', default=False, help='Print output to file')
 
 def fileOrFolder(dataFile):
 
@@ -42,7 +48,7 @@ def storing_folders(rootf, depthlevel, output):
         if level == 1:
             
             color = fileOrFolder(ro)
-            print(indent + (ro + color))
+            print(indent  + (ro + color))
 
             if output:
                 outputFile.write(indent + ro + "\n")
@@ -63,22 +69,17 @@ def storing_folders(rootf, depthlevel, output):
             if output:
                 outputFile.write((indent*level) + "| " + os.path.basename(f) + "\n")
 
-out = False
 
-if not len(sys.argv) > 1:
-    rootf = os.getcwd()
-elif len(sys.argv) is 3:
-    
-    rootf = sys.argv[1]
-    out = sys.argv[2]
+arguments = vars(ap.parse_args())
 
-    if "-o" in out:
-        out = True
-    else:
-        out = False
+source = arguments["source"]
+level = int(arguments["level"])
+output = arguments["output"]
 
-else:
-    rootf = sys.argv[1]
+print(source, level, output)
+print(type(source), type(level), type(output))
 
-storing_folders(rootf, 5, out)
+
+
+storing_folders(source, level, output)
 
