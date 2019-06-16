@@ -1,6 +1,6 @@
 # Directory Tree Generator
 
-Drawing inspiration from DirTreeX, this command line utility program aims  
+Drawing inspiration from DirTreeX, this command line utility program for Linux systems aims  
 to print files and directories to the terminal.
 Different colours are used to differentiate between files and folders in the system.  
 
