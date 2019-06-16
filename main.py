@@ -18,11 +18,9 @@ ap.add_argument('-fic', '--filecolor', default='green', help='Change print color
 def fileOrFolder(path, args):
 
     if (os.path.isdir(path)):
-        colour = args['foldercolor']
+        return args['foldercolor']
     else:
-        colour = args['filecolor']
-
-    return colour
+        return args['filecolor']
 
 # The relative depth of an inputted path
 def relative_depth(dir_path, level_offset):
